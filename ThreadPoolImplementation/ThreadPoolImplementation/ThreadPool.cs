@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 
-namespace TreadPoolImplementation
+namespace ThreadPoolImplementation
 {
   public sealed class ThreadPool : IDisposable
   {
@@ -116,7 +116,8 @@ namespace TreadPoolImplementation
 
     private readonly LinkedList<Action> tasks = new LinkedList<Action>();
     private readonly List<Worker> workers;
-    private readonly int countWorkers = 100;
+    // Unfortunately number of workers need to pick up
+    private readonly int countWorkers = Environment.ProcessorCount;
 
     private object tasksLock = new object();
     private object criticalLock = new object();

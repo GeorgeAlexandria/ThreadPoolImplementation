@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{0CDF58FF-F3BE-48EC-869A-8CA48F23BC5F}</ProjectGuid>
+    <ProjectGuid>{31C5F188-AAD5-48D3-AE86-2867725826A4}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TreadPoolImplementation</RootNamespace>
-    <AssemblyName>TreadPoolImplementation</AssemblyName>
+    <RootNamespace>TestProject</RootNamespace>
+    <AssemblyName>TestProject</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -42,8 +42,13 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="ThreadPool.cs" />
-    <Compile Include="Worker.cs" />
+    <Compile Include="Representation.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ThreadPoolImplementation\ThreadPoolImplementation.csproj">
+      <Project>{0CDF58FF-F3BE-48EC-869A-8CA48F23BC5F}</Project>
+      <Name>ThreadPoolImplementation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
