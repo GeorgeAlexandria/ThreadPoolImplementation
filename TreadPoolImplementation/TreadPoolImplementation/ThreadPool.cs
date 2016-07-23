@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -108,11 +109,6 @@ namespace TreadPoolImplementation
             }
             Monitor.Exit(Instance.tasksLock);
           }
-          if (task != null)
-          {
-            task();
-            Console.WriteLine(name);
-          }
           task?.Invoke();
         }
       }
@@ -120,7 +116,7 @@ namespace TreadPoolImplementation
 
     private readonly LinkedList<Action> tasks = new LinkedList<Action>();
     private readonly List<Worker> workers;
-    private readonly int countWorkers = 10;
+    private readonly int countWorkers = 100;
 
     private object tasksLock = new object();
     private object criticalLock = new object();
@@ -135,6 +131,10 @@ namespace TreadPoolImplementation
       {
         return instance;
       }
+    }
+
+    static ThreadPool()
+    {
     }
 
     private ThreadPool()
