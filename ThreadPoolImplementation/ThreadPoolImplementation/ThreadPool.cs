@@ -15,6 +15,8 @@ namespace ThreadPoolImplementation
       // This list always must contains a one empty node with null action
       public readonly LinkedList<Action> tasks = new LinkedList<Action>();
 
+      private ILogger logger;
+
       private string name;
       public Action FirstTask
       {
@@ -72,8 +74,9 @@ namespace ThreadPoolImplementation
         }
       }
 
-      public Worker(string name)
+      public Worker(ILogger logger, string name)
       {
+        this.logger = logger;
         tasks.AddFirst(new LinkedListNode<Action>(null));
       }
 
@@ -86,30 +89,45 @@ namespace ThreadPoolImplementation
 
       public void Start()
       {
-        thread = new Thread(Work);
+        // Safe on all work action, it may be useful in future.
+        thread = new Thread(() => { Utils.SafeHandleLog(Work, logger); });
         thread.Start();
       }
 
       private void Work()
       {
-        while (true)
+        while (!Instance.isDisposed)
         {
-          if (Instance.isDisposed)
+          Utils.SafeHandleLog(() =>
           {
-            return;
-          }
-          Action task = null;
-          if (Monitor.TryEnter(Instance.tasksLock))
-          {
-            if (Instance.tasks.First != null)
+            Action task = null;
+            bool isLocked = false;
+            // Instead of using this try/finally can call Utils.SafeHandleFinalize, but it work slower
+            try
             {
-              task = Instance.tasks.First.Value;
-              Instance.tasks.RemoveFirst();
-              Monitor.PulseAll(Instance.tasksLock);
+              // Need to try wait pulse from another thread instead of this
+              isLocked = Monitor.TryEnter(Instance.tasksLock);
+              if (isLocked)
+              {
+                if (Instance.tasks.First != null)
+                {
+                  task = Instance.tasks.First.Value;
+                  Instance.tasks.RemoveFirst();
+                  //throw new ArgumentException();
+                }
+              }
             }
-            Monitor.Exit(Instance.tasksLock);
-          }
-          task?.Invoke();
+            finally
+            {
+              if (isLocked)
+              {
+                Monitor.PulseAll(Instance.tasksLock);
+                Monitor.Exit(Instance.tasksLock);
+              }
+            }
+            task?.Invoke();
+            //throw new NullReferenceException();
+          }, logger);
         }
       }
     }
@@ -143,7 +161,7 @@ namespace ThreadPoolImplementation
       workers = new List<Worker>(countWorkers);
       for (int i = 0; i < countWorkers; i++)
       {
-        Worker worker = new Worker($"{i}");
+        Worker worker = new Worker(new ConsoleLogger(), $"{i}");
         worker.Start();
         workers.Add(worker);
       }
