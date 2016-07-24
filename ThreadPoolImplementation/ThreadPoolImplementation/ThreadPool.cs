@@ -90,7 +90,7 @@ namespace ThreadPoolImplementation
       public void Start()
       {
         // Safe on all work action, it may be useful in future.
-        thread = new Thread(() => { Utils.SafeHandleLog(Work, logger); });
+        thread = new Thread(() => { ExceptionHelper.SafeHandler(Work, logger); });
         thread.Start();
       }
 
@@ -98,33 +98,27 @@ namespace ThreadPoolImplementation
       {
         while (!Instance.isDisposed)
         {
-          Utils.SafeHandleLog(() =>
+          ExceptionHelper.SafeHandler(() =>
           {
             Action task = null;
-            bool isLocked = false;
-            // Instead of using this try/finally can call Utils.SafeHandleFinalize, but it work slower
-            try
+            //ThreadHelper.SafeHandlerEnter(() =>
+            //{
+            //  if (Instance.tasks.First != null)
+            //  {
+            //    task = Instance.tasks.First.Value;
+            //    Instance.tasks.RemoveFirst();
+            //    //throw new ArgumentException();
+            //  }
+            //}, Instance.tasksLock);
+            ThreadHelper.SafeHandlerTryEnter(() =>
             {
-              // Need to try wait pulse from another thread instead of this
-              isLocked = Monitor.TryEnter(Instance.tasksLock);
-              if (isLocked)
+              if (Instance.tasks.First != null)
               {
-                if (Instance.tasks.First != null)
-                {
-                  task = Instance.tasks.First.Value;
-                  Instance.tasks.RemoveFirst();
-                  //throw new ArgumentException();
-                }
+                task = Instance.tasks.First.Value;
+                Instance.tasks.RemoveFirst();
+                //throw new ArgumentException();
               }
-            }
-            finally
-            {
-              if (isLocked)
-              {
-                Monitor.PulseAll(Instance.tasksLock);
-                Monitor.Exit(Instance.tasksLock);
-              }
-            }
+            }, null, Instance.tasksLock);
             task?.Invoke();
             //throw new NullReferenceException();
           }, logger);

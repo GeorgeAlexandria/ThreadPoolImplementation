@@ -29,13 +29,13 @@ namespace ThreadPoolImplementation
     }
   }
 
-  internal static class Utils
+  internal static class ExceptionHelper
   {
-    internal static void SafeHandleLog(Action action, ILogger logger)
+    internal static void SafeHandler(Action unsafeAction, ILogger logger)
     {
       try
       {
-        action();
+        unsafeAction?.Invoke();
       }
       catch (Exception exception)
       {
@@ -43,8 +43,25 @@ namespace ThreadPoolImplementation
         // Need throw or work next?
       }
     }
+  }
 
-    internal static void SafeHandleFinalize(Action criticalAction, object lockObject)
+  internal static class ThreadHelper
+  {
+    internal static void SafeHandlerEnter(Action criticalAction, object lockObject)
+    {
+      try
+      {
+        Monitor.Enter(lockObject);
+        criticalAction?.Invoke();
+      }
+      finally
+      {
+        Monitor.PulseAll(lockObject);
+        Monitor.Exit(lockObject);
+      }
+    }
+
+    internal static void SafeHandlerTryEnter(Action criticalAction, Action notCriticalAction, object lockObject)
     {
       bool isLocked = false;
       try
@@ -52,7 +69,11 @@ namespace ThreadPoolImplementation
         isLocked = Monitor.TryEnter(lockObject);
         if (isLocked)
         {
-          criticalAction();
+          criticalAction?.Invoke();
+        }
+        else
+        {
+          notCriticalAction?.Invoke();
         }
       }
       finally
