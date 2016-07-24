@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace ThreadPoolImplementation
 {
-  internal class ConsoleLogger : ILogger
+  public class ConsoleLogger : ILogger
   {
     public void LogError(string message, Exception exception)
     {
@@ -47,6 +47,8 @@ namespace ThreadPoolImplementation
 
   internal static class ThreadHelper
   {
+    internal static readonly int ThreadsCount = Environment.ProcessorCount;
+
     internal static void SafeHandlerEnter(Action criticalAction, object lockObject)
     {
       try

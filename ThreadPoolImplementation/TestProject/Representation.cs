@@ -30,7 +30,7 @@ namespace TestProject
       FileNotExists,
     }
 
-    private static readonly int minNumbedBytes = 1;
+    private static readonly int minNumberBytes = 1;
     private static readonly int maxNumberBytes = 0x400 * 0x400 * 100;
 
     public static void WriteInformationAboutProject()
@@ -59,7 +59,7 @@ namespace TestProject
             additionalErrorInfo = "\nError: Cann't parse input data.\n";
             break;
           case ErrorType.InvalidArgument:
-            additionalErrorInfo = $"\nError: Invalid input number of byte. Please enter number of bytes between {minNumbedBytes} and {maxNumberBytes} bytes.\n";
+            additionalErrorInfo = $"\nError: Invalid input number of byte. Please enter number of bytes between {minNumberBytes} and {maxNumberBytes} bytes.\n";
             break;
           case ErrorType.FileNotExists:
             additionalErrorInfo = $"\nError: Input file doesn't exist.\n";
@@ -88,7 +88,7 @@ namespace TestProject
       {
         return ErrorType.InvalidFormat;
       }
-      if (parseInt < minNumbedBytes || parseInt > maxNumberBytes)
+      if (parseInt < minNumberBytes || parseInt > maxNumberBytes)
       {
         return ErrorType.InvalidArgument;
       }

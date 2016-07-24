@@ -129,10 +129,9 @@ namespace ThreadPoolImplementation
     private readonly LinkedList<Action> tasks = new LinkedList<Action>();
     private readonly List<Worker> workers;
     // Unfortunately number of workers need to pick up
-    private readonly int countWorkers = Environment.ProcessorCount;
+    private readonly int countWorkers = ThreadHelper.ThreadsCount;
 
     private object tasksLock = new object();
-    private object criticalLock = new object();
 
     private bool isDisposed = false;
 
