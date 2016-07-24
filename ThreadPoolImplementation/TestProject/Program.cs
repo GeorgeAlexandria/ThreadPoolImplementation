@@ -76,27 +76,17 @@ namespace TestProject
       string pathToFile = data.first;
       int countBytes = data.second;
       long repeat = new FileInfo(pathToFile).Length / countBytes + 1;
-      //Stopwatch watch = new Stopwatch();
-      //watch.Start();
       using (ThreadPoolImplementation.ThreadPool.Instance)
       {
-        //using (BufferedStream stream = new BufferedStream(File.OpenRead(pathToFile), megabyte))
-        //{
         for (long i = 0; i < repeat; ++i)
         {
-          //byte[] buffer = new byte[countBytes];
-          //int readedCount = stream.Read(buffer, 0, countBytes);
           long blockNumber = i;
           ThreadPoolImplementation.ThreadPool.Instance.QueueUserWorkTask(() =>
           {
             taskReadBytesAndHash(blockNumber, countBytes, pathToFile);
-            //taskHashBytes(blockNumber, countBytes, pathToFile, buffer);
           });
         }
-        //}
       }
-      //watch.Stop();
-      //Console.WriteLine(watch.ElapsedMilliseconds);
     }
   }
 }

@@ -47,6 +47,7 @@ namespace ThreadPoolImplementation
 
   internal static class ThreadHelper
   {
+    // Unfortunately number of workers need to pick up
     internal static readonly int ThreadsCount = Environment.ProcessorCount;
 
     internal static void SafeHandlerEnter(Action criticalAction, object lockObject)
