@@ -63,7 +63,7 @@ namespace TestProject
           readedCountBytes = reader.Read(buffer, 0, countBytes);
         }
       }
-      taskHashBytes(blockNumber, countBytes, buffer);
+      taskHashBytes(blockNumber, readedCountBytes, buffer);
     };
 
     private static int megabyte = 1024 * 1024;
