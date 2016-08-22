@@ -34,22 +34,12 @@ namespace ThreadPoolImplementation
           ExceptionHelper.SafeHandler(() =>
           {
             Action task = null;
-            //ThreadHelper.SafeHandlerEnter(() =>
-            //{
-            //  if (Instance.tasks.First != null)
-            //  {
-            //    task = Instance.tasks.First.Value;
-            //    Instance.tasks.RemoveFirst();
-            //    //throw new ArgumentException();
-            //  }
-            //}, Instance.tasksLock);
             ThreadHelper.SafeHandlerTryEnter(() =>
             {
               if (Instance.tasks.First != null)
               {
                 task = Instance.tasks.First.Value;
                 Instance.tasks.RemoveFirst();
-                //throw new ArgumentException();
               }
             }, null, Instance.tasksLock);
             task?.Invoke();

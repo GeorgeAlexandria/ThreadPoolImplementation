@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
 
 namespace ThreadPoolImplementation
@@ -29,9 +26,9 @@ namespace ThreadPoolImplementation
     }
   }
 
-  internal static class ExceptionHelper
+  public static class ExceptionHelper
   {
-    internal static void SafeHandler(Action unsafeAction, ILogger logger)
+    public static void SafeHandler(Action unsafeAction, ILogger logger)
     {
       try
       {

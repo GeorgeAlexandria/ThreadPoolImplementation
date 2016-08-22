@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace ThreadPoolImplementation
 {
-  interface ILogger
+  public interface ILogger
   {
     void LogError(string message, Exception exception);
 
